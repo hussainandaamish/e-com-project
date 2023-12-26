@@ -1,8 +1,12 @@
-import React, { useState } from 'react';
+import React, {useContext, useState } from 'react';
 import './signin.css';
+//import { Logincontext } from '../context/Contextprovider';
 import { NavLink } from 'react-router-dom';
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 const Signin = () => {
+   // const { account, setAccount } = useContext(Logincontext);
     const [logdata, setdata]=useState({
         email:"",
         password:""
@@ -16,6 +20,45 @@ const Signin = () => {
         }
         })
     }
+    const senddata = async (e) => {
+        e.preventDefault();
+
+        const { email, password } = logdata;
+        // console.log(email);
+        try {
+            const res = await fetch("/login", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify({
+                    email, password
+                })
+            });
+
+
+            const data = await res.json();
+            // console.log(data);
+
+            if (res.status === 400 || !data) {
+                console.log("invalid details");
+                toast.warn("Invalid Details 👎!", {
+                    position: "top-center"
+                });
+            } else {
+              //  setAccount(data);
+               // setdata({ ...logdata, email: "", password: "" })
+               console.log("data valid")
+                toast.success("Login Successfully done 😃!", {
+                    position: "top-center"
+                });
+            }
+        } catch (error) {
+            console.log("login page ka error" + error.message);
+        }
+    };
+
+
   return (
     <section>
         <div className='sign_container'>
@@ -23,7 +66,7 @@ const Signin = () => {
                 <img src='quantum.png'/>
             </div>
             <div className='sign_form'> 
-            <form>
+            <form method='POST'>
                 <h1>Sign IN</h1>
                 <div className='form_data'>
                 <label>Email</label>
@@ -39,7 +82,7 @@ const Signin = () => {
                 value={logdata.password}
                 id='password' placeholder='Atleast 6 Characters'/>
                 </div>
-                <button className='signin_btn'>Continue</button>
+                <button className='signin_btn' onClick={senddata}>Continue</button>
             </form>
             </div>
             <div className='create_accountinfo'>
@@ -47,6 +90,7 @@ const Signin = () => {
                <NavLink to='/register'><button>Create Your Quantum Account</button> </NavLink> 
             </div>
         </div>
+        <ToastContainer/>
     </section>
   )
 }
