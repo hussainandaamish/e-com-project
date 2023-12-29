@@ -65,9 +65,20 @@ Userschema.methods.generatAuthtoken = async function(){
         console.log(error);
     }
 }
+Userschema.methods.addcartdata = async function(cart){
+    try {
+        this.carts = this.carts.concat(cart);
+        await this.save();
+        return this.carts;
+    } catch (error) {
+        console.log(error + "bhai cart add time aai error");
+    }
+}
 const User = new mongoose.model("USER", Userschema);
 
 // password hasing 
+
+// addto cart data
 
 
 module.exports = User;

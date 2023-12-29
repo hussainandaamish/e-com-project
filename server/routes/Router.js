@@ -4,6 +4,7 @@ const Products= require ("../Models/Productschema.js");
 const products = require("../constants/Productsdata");
 const user= require("../Models/userSchema.js");
 const bcrypt =  require("bcryptjs");
+const authenicate = require("../middleware/authenticate.js");
 // Now you can use UserModel for your operations
 
 
@@ -90,7 +91,33 @@ router.post("/login", async (req, res) => {
     }
 });
 
+// adding the data into cart
+router.post("/addcart/:id",authenicate, async (req, res) => {
 
+    try {
+      //  console.log("perfect 6");
+        const { id } = req.params;
+        const cart = await products.findOne({ id: id });
+        console.log(cart + "cart milta hain");
+
+        const Usercontact = await user.findOne({ _id: req.userID });
+        console.log(Usercontact + "user milta hain");
+
+
+        if (Usercontact) {
+           const cartData = await Usercontact.addcartdata(cart);
+
+            await Usercontact.save();
+            console.log(cartData + " thse save wait kr");
+            console.log(Usercontact + "userjode save");
+            res.status(201).json(Usercontact);
+       }else{
+        res.status(401).json({error:"invalid user"})
+       }
+    } catch (error) {
+        console.log(error);
+    }
+});
 
 //get individual products
 router.get("/getproductsone/:id", async (req, res) => {
@@ -103,6 +130,16 @@ router.get("/getproductsone/:id", async (req, res) => {
         res.status(201).json(individual);
     } catch (error) {
         res.status(400).json(error);
+    }
+});
+// get data into the cart
+router.get("/cartdetails", authenicate, async (req, res) => {
+    try {
+        const buyuser = await user.findOne({ _id: req.userID });
+        console.log(buyuser + "user hain buy pr");
+        res.status(201).json(buyuser);
+    } catch (error) {
+        console.log(error + "error for buy now");
     }
 });
 

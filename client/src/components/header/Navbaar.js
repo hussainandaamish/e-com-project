@@ -1,13 +1,16 @@
-import React from 'react';
+import {React, useContext} from 'react';
 import './navbaar.css';
 import Avatar from '@mui/material/Avatar';
 import Searchicon from '@mui/icons-material/Search';
+import { Logincontext } from "../context/ContextProvider";
 import Badge from '@mui/material/Badge';
 import  ShoppingCart  from '@mui/icons-material/ShoppingCart';
 import { NavLink } from 'react-router-dom';
 
 
 const Navbaar=()=>{
+  const { account, setAccount } = useContext(Logincontext);
+  console.log(account)
         return (
           <header>
             <nav>
@@ -28,12 +31,31 @@ const Navbaar=()=>{
                 <div className="nav_btn">
                   <NavLink to="/login">Sign In</NavLink>
                 </div>
-                <div className="cart_btn">
-                <Badge badgeContent={4} color="primary">
-                                    <ShoppingCart id="icon"/>
-                </Badge>
-                </div>
-                <Avatar className='avtar'/>
+                {
+                        account ? <NavLink to="/buynow">
+                            <div className="cart_btn">
+                                <Badge badgeContent={account.carts.length} color="secondary">
+                                    <i className="fas fa-shopping-cart" id="icon"></i>
+                                </Badge>
+
+                                <p>Cart</p>
+                            </div>
+                        </NavLink> : <NavLink to="/login">
+                            <div className="cart_btn">
+                                <Badge badgeContent={0} color="secondary">
+                                    <i className="fas fa-shopping-cart" id="icon"></i>
+                                </Badge>
+                                <p>Cart</p>
+                            </div>
+                        </NavLink>
+                    }
+
+
+                    {
+                        account ?
+                            <Avatar className="avtar">{account.fname[0].toUpperCase()}</Avatar> :
+                            <Avatar className="avtar"/>
+                    }
               </div>
             </nav>
           </header>
