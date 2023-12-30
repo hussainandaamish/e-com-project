@@ -1,4 +1,4 @@
-import {React, useContext} from 'react';
+import {React, useContext, useEffect} from 'react';
 import './navbaar.css';
 import Avatar from '@mui/material/Avatar';
 import Searchicon from '@mui/icons-material/Search';
@@ -10,7 +10,34 @@ import { NavLink } from 'react-router-dom';
 
 const Navbaar=()=>{
   const { account, setAccount } = useContext(Logincontext);
-  console.log(account)
+  console.log(account);
+  
+  const getdetailsvaliduser = async () => {
+    const res = await fetch("/validuser", {
+        method: "GET",
+        headers: {
+            Accept: "application/json",
+            "Content-Type": "application/json"
+        },
+        credentials: "include"
+    });
+
+    const data = await res.json();
+    // console.log(data);
+
+    if (res.status !== 201) {
+        console.log("first login");
+    } else {
+        // console.log("cart add ho gya hain");
+        setAccount(data);
+    }
+}
+
+useEffect(() => {
+    getdetailsvaliduser();
+}, []);
+
+
         return (
           <header>
             <nav>
@@ -53,7 +80,7 @@ const Navbaar=()=>{
 
                     {
                         account ?
-                            <Avatar className="avtar">{account.fname[0].toUpperCase()}</Avatar> :
+                            <Avatar className="avtar2">{account.fname[0].toUpperCase()}</Avatar> :
                             <Avatar className="avtar"/>
                     }
               </div>
