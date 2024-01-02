@@ -5,7 +5,7 @@ const DefaultData= async()=>{
     try{
         await Products.deleteMany({})
         const storedata= await Products.insertMany(productsdata)
-        console.log(storedata)
+        // console.log(storedata)
     }catch(error){
         console.log(error.message)
     }
